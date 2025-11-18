@@ -15,7 +15,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: backend   # 👈 IMPORTANT (your backend folder)
+        working-directory: backend   
 
     steps:
       - name: Checkout code
