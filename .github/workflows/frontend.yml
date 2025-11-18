@@ -1,39 +1,39 @@
-name: Frontend CI
+name: Deploy Frontend
 
 on:
   push:
-    paths:
-      - "frontend/**"
-      - ".github/workflows/frontend.yml"
-  pull_request:
-    paths:
-      - "frontend/**"
+    branches: ["main"]
 
 jobs:
-  frontend-ci:
+  deploy:
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: frontend   # 👈 Runs inside frontend folder
+        working-directory: frontend
+
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "18"
 
-      - name: Install frontend dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: Run ESLint
-        run: npm run lint
-
-      - name: Build frontend (Vite)
+      - name: Build frontend
         run: npm run build
 
-      - name: Preview build check
-        run: echo "Frontend CI OK"
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: frontend/dist
+          publish_branch: gh-pages
+          force_orphan: true
